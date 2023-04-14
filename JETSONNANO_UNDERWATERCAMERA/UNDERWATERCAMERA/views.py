@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import StreamingHttpResponse
 from django.views.decorators import gzip
-from asyncio import sleep
 from .models import Auto_cam
 import cv2
 import os
@@ -61,8 +60,7 @@ def Camera_Auto(request):
     # kiểm tra biến info có tồn tại hay không
     if info:
         # info tồn tại, thực hiện các thao tác tiếp theo ở đây
-        print("Thông tin nhận được: ", info)
-        # print('Thông tin nhận được: ', info)
+        # print("Thông tin nhận được: ", info)
         queryset = Auto_cam.objects.filter(id__in=[obj['id'] for obj in info])
         Date_now = datetime.datetime.now()
         for obj in queryset:
@@ -81,18 +79,49 @@ def Camera_Auto(request):
                     # Thực hiện tính thời gian TIMERS chính là khoảng thời gian timers lấy được
                     # slep = timers*60
                     # sleep(slep)
+                    print(f"Thực hiện chụp {counters} bức ảnh, mỗi bức ảnh cách nhau {timers} phút")
+                    counter = 0
                     for i in range(counters):
                         if ret:  # nếu đọc ảnh thành công
                             localtime = time.localtime(time.time())
                             read_time = str(localtime.tm_hour) + 'h' + str(localtime.tm_min) + 'm' + str(i + 1)
                             path_Camera = 'static/CAMERA/Image_' + read_time + '.jpg'
                             cv2.imwrite(path_Camera, frame)
+                            counter += 1
+                            if counter == counters:
+                                break
+                            time.sleep((timers * 60) / counters)  # tạm dừng chương trình trong khoảng thời gian timers
                         else:
                             print("Không thể đọc ảnh từ camera")
-                        sleep = timers * 60000
-                        cv2.waitKey(sleep)
-                        # cv2.waitKey(500)  # đợi 0.5 giây để chụp ảnh tiếp theo
                     break
+                    '''for i in range(counters):
+                        ret, frame = vcap.read()  # đọc ảnh từ camera
+                        if ret:
+                            localtime = time.localtime(time.time())
+                            read_time = str(localtime.tm_hour) + 'h' + str(localtime.tm_min) + 'm' + str(i + 1)
+                            path_Camera = 'static/CAMERA/Image_' + read_time + '.jpg'
+                            cv2.imwrite(path_Camera, frame)
+                            print("Đã chụp ảnh thứ ", i + 1)
+                        else:
+                            print("Không thể đọc ảnh từ camera")
+                        time.sleep((timers * 60) / counters)  # tạm dừng chương trình trong khoảng thời gian tính được
+                    vcap.release()  # giải phóng camera
+                    cv2.destroyAllWindows()'''
+                    # counter = 0  # biến đếm số lần chụp ảnh đã thực hiện
+                    # while True:
+                    #     ret, frame = vcap.read()  # đọc ảnh từ camera
+                    #     if ret:
+                    #         localtime = time.localtime(time.time())
+                    #         read_time = str(localtime.tm_hour) + 'h' + str(localtime.tm_min) + 'm' + str(counter + 1)
+                    #         path_Camera = 'static/CAMERA/Image_' + read_time + '.jpg'
+                    #         cv2.imwrite(path_Camera, frame)
+                    #         print("Đã chụp ảnh thứ ", counter + 1)
+                    #         counter += 1
+                    #         if counter == counters:
+                    #             break
+                    #     else:
+                    #         print('Không thể thực hiện đọc ảnh từ Camera')
+                    #     time.sleep((timers * 60) / counters)  # tạm dừng chương trình trong khoảng thời gian timers
                 else:
                     print("Thời gian không khớp. Bỏ qua")
             else:
