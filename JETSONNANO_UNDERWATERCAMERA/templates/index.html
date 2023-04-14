@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thu nhận thông tin qua Camera</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href=" {% static 'css/style.css' %} ">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="flex-row">
+        <div class="row">
+            <div class="col-lg-8 mt-2 mx-2">
+                <img id="video_feed" src="{% url 'video_feed' %}" width="1024" height="720" style="transform: scaleX(-1) scaleY(1)" />
+            </div>
+
+            <div class="col-lg-3 mt-5 mx-5">
+                <div class="card">
+                    <div class="card p-1 justify-content-start" style="display: flex;">
+                        <h5 class="card-title mt-3 text-center justify-content-between">Chế độ tự động</h5>
+                        <form class="my-5" action="{% url 'Auto' %}" method="post" name="AutoFrom">
+                            {% csrf_token %}
+                            <div class="mb-3" style="display: flex;">
+                                <div class="m-2 align-items-flex-start flex-column" style="display: flex;">
+                                    <label for="inputDate" >Date</label>
+                                    <input type="date" class="form-control" id="Clock_Date" name="Clock_Date">
+                                </div>
+
+                                <div class="m-2 align-items-flex-start flex-column" style="display: flex;">
+                                    <label for="inputTime" >Time</label>
+                                    <input type="time" class="form-control" id="Clock_Time" name="Clock_Time">
+                                </div>
+                            </div>
+
+                            <div class="mt-1 input-group mb-3">
+                                <span class="input-group-text">Timer: </span>
+                                <input type="number" class="form-control" id="Timer" name="Timer">
+                            </div>
+
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">Counter: </span>
+                                <input type="number" class="form-control" id="Counter" name="Counter">
+                            </div>
+
+                            <div class="text-center justify-content-between">
+                                <button type="submit" onclick="capture()" class="btn btn-info">Lưu thông tin</button>
+                            </div>
+                        </form>
+
+                        <button onclick="openFolder()">Mở ảnh</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function capture(){
+            var y = document.forms["AutoFrom"]["Timer"].value;
+            var z = document.forms["AutoFrom"]["Counter"].value;
+            if (y == "" || y == null){
+                alert("Chưa điền thông tin TIMER");
+                return false;
+            }
+            if (z == "" || z == null){
+                alert("Chưa điền thông tin COUNTER");
+                return false;
+            }
+            else{
+                window.location.href = "{% url 'Auto' %}";
+            }
+        }
+
+        setInterval(function(){
+            $.ajax({
+                url: "/Camera_Auto",
+                success: function(data){
+                    console.log("Hahahahhaha")
+                }
+            });
+        }, 600)
+
+        function openFolder() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '{% url "Open_Folder" %}');
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
