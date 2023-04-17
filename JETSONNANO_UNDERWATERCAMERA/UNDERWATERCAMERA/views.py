@@ -13,7 +13,7 @@ import datetime
 
 
 # vcap = cv2.VideoCapture("rtsp://admin:admin@192.168.1.78:554/30", cv2.CAP_FFMPEG)
-vcap = cv2.VideoCapture(1)
+vcap = cv2.VideoCapture(0)
 vcap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
 vcap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -94,6 +94,7 @@ def Camera_Auto_Cap(counters, timers):
         localtime = time.localtime(time.time())
         read_time = str(localtime.tm_hour) + 'h' + str(localtime.tm_min) + 'm' + str(i + 1)
         path_Camera = 'static/CAMERA_Temp/Image_' + read_time + '.jpg'
+        # cv2.waitKey(300)
         cv2.imwrite(path_Camera, frame)
         files = os.listdir(folder_path)
         count = 0

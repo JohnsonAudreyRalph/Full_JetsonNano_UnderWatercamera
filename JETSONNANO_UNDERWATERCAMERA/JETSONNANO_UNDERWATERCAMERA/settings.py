@@ -73,6 +73,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'JETSONNANO_UNDERWATERCAMERA.wsgi.application'
 
+# Thiết lập timeout cho WSGI server (vd: gunicorn)
+WSGI_SERVER_OPTIONS = {
+    'timeout': 600,
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
