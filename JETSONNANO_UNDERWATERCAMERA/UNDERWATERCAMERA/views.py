@@ -13,7 +13,7 @@ import datetime
 
 
 # vcap = cv2.VideoCapture("rtsp://admin:admin@192.168.1.78:554/30", cv2.CAP_FFMPEG)
-vcap = cv2.VideoCapture(0)
+vcap = cv2.VideoCapture(1)
 vcap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
 vcap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -94,7 +94,6 @@ def Camera_Auto_Cap(counters, timers):
         localtime = time.localtime(time.time())
         read_time = str(localtime.tm_hour) + 'h' + str(localtime.tm_min) + 'm' + str(i + 1)
         path_Camera = 'static/CAMERA_Temp/Image_' + read_time + '.jpg'
-        # cv2.waitKey(300)
         cv2.imwrite(path_Camera, frame)
         files = os.listdir(folder_path)
         count = 0
@@ -124,7 +123,9 @@ def Camera_Auto_Cap(counters, timers):
             Delete_Image(folder_path=folder_path)
             print("Thoát!!!!!!")
             break
-        cv2.waitKey(timers * 60 * 1000)
+        interval = (timers * 60) / (counters)
+        cv2.waitKey(int(interval * 1000))
+        # cv2.waitKey((timers * 60 * 1000)/counters)
     print('Đã xong!!!!!!')
     info = Auto_cam.objects.values()
     if info:
@@ -161,7 +162,7 @@ def Camera_Auto(request):
                 print("Ngày đã trùng khớp, bắt đầu thực hiện so sánh với thời gian")
                 if time_clock.hour == Date_now.hour and time_clock.minute == Date_now.minute:
                     print('Giờ đã trùng khớp. Thực hiện tiếp')
-                    print(f"Thực hiện chụp {counters} bức ảnh, mỗi bức ảnh cách nhau {timers} phút")
+                    print(f"Thực hiện chụp {counters} bức ảnh trong {timers} phút")
                     if not Check_CAMERA:
                         Camera_Auto_Cap(counters=counters, timers=timers)
                 else:
@@ -170,7 +171,7 @@ def Camera_Auto(request):
                 print("Ngày không khớp. Bỏ qua")
     else:
         # info không tồn tại hoặc rỗng, thông báo lỗi hoặc xử lý theo yêu cầu
-        print("Lỗi: Không tìm thấy thông tin")
+        print("Chưa có thông tin")
     return redirect('index')
 
 
