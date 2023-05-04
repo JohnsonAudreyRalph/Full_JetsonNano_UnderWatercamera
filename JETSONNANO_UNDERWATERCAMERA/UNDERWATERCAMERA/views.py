@@ -12,8 +12,8 @@ import webbrowser
 import datetime
 
 
-# vcap = cv2.VideoCapture("rtsp://admin:admin@192.168.1.78:554/30", cv2.CAP_FFMPEG)
-vcap = cv2.VideoCapture(1)
+vcap = cv2.VideoCapture("rtsp://admin:admin@192.168.1.84:554/30", cv2.CAP_FFMPEG)
+# vcap = cv2.VideoCapture(1)
 vcap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
 vcap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
